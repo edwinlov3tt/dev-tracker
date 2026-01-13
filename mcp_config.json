@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "dev-tracker": {
+      "command": "python3",
+      "args": ["/Users/edwinlovettiii/dev-tracker/server.py"],
+      "env": {
+        "ROADMAP_API_TOKEN": "${ROADMAP_API_TOKEN}",
+        "DEV_TRACKER_DB": "/Users/edwinlovettiii/dev-tracker/dev_tracker.db"
+      }
+    }
+  }
+}

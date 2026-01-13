@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Development Tracker Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-primary: #0f0f1a;
+            --bg-secondary: #1a1a2e;
+            --bg-tertiary: #252542;
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --primary: #6366f1;
+            --primary-hover: #818cf8;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --border: #334155;
+            --radius: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .header h1 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .mode-toggle {
+            display: flex;
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+            padding: 4px;
+        }
+
+        .mode-toggle button {
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+
+        .mode-toggle button.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .mode-toggle button:hover:not(.active) {
+            color: var(--text-primary);
+        }
+
+        .refresh-btn {
+            padding: 8px 16px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .refresh-btn:hover {
+            border-color: var(--primary);
+        }
+
+        .refresh-btn.loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .last-updated {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Summary Cards */
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .card {
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+            padding: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .summary-card .label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .summary-card .value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .summary-card .value.money {
+            color: var(--success);
+        }
+
+        .summary-card .subtext {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* Grid Layout */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 1024px) {
+            .grid-2, .grid-3 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Card Headers */
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .card-header h2 {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .card-header select {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+
+        /* ROI Calculator */
+        .roi-calculator {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .roi-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .roi-input-group label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .roi-input-group input {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 8px 12px;
+            border-radius: var(--radius);
+            font-size: 0.875rem;
+        }
+
+        .roi-input-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .roi-formula {
+            grid-column: span 2;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius);
+            padding: 16px;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 0.875rem;
+        }
+
+        .roi-formula .line {
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .roi-formula .result {
+            color: var(--success);
+            font-weight: 600;
+            border-top: 1px solid var(--border);
+            padding-top: 8px;
+            margin-top: 8px;
+        }
+
+        /* Activity Chart */
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+
+        /* Commit Timeline */
+        .commit-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .commit-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .commit-item:last-child {
+            border-bottom: none;
+        }
+
+        .commit-hash {
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 0.75rem;
+            color: var(--primary);
+            background: var(--bg-tertiary);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .commit-repo {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            background: var(--bg-tertiary);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .commit-message {
+            flex: 1;
+            font-size: 0.875rem;
+        }
+
+        .commit-stats {
+            display: flex;
+            gap: 8px;
+            font-size: 0.75rem;
+            align-items: center;
+        }
+
+        .commit-stats .additions {
+            color: var(--success);
+        }
+
+        .commit-stats .deletions {
+            color: var(--error);
+        }
+
+        .commit-stats .gap {
+            color: var(--text-muted);
+        }
+
+        .commit-stats .synced {
+            color: var(--success);
+        }
+
+        .commit-stats .not-synced {
+            color: var(--text-muted);
+        }
+
+        /* Repo Cards */
+        .repo-grid {
+            display: grid;
+            gap: 12px;
+        }
+
+        .repo-card {
+            background: var(--bg-tertiary);
+            border-radius: var(--radius);
+            padding: 12px;
+        }
+
+        .repo-card h3 {
+            font-size: 0.875rem;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .repo-card h3 a {
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .repo-card h3 a:hover {
+            color: var(--primary);
+        }
+
+        .repo-card .private-badge {
+            font-size: 0.625rem;
+            background: var(--warning);
+            color: #000;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .repo-card .description {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .repo-card .meta {
+            display: flex;
+            gap: 16px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Project Cards */
+        .project-grid {
+            display: grid;
+            gap: 12px;
+        }
+
+        .project-card {
+            background: var(--bg-tertiary);
+            border-radius: var(--radius);
+            padding: 12px;
+        }
+
+        .project-card h3 {
+            font-size: 0.875rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-badge {
+            font-size: 0.625rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+
+        .status-badge.in-development {
+            background: var(--primary);
+            color: white;
+        }
+
+        .status-badge.beta {
+            background: var(--warning);
+            color: #000;
+        }
+
+        .status-badge.stable {
+            background: var(--success);
+            color: #000;
+        }
+
+        .project-card .meta {
+            display: flex;
+            gap: 16px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Mappings Table */
+        .mappings-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .mappings-table th,
+        .mappings-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .mappings-table th {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .mappings-table td {
+            font-size: 0.875rem;
+        }
+
+        .auto-sync-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .auto-sync-badge.enabled {
+            background: rgba(34, 197, 94, 0.2);
+            color: var(--success);
+        }
+
+        .auto-sync-badge.disabled {
+            background: rgba(100, 116, 139, 0.2);
+            color: var(--text-muted);
+        }
+
+        /* Collapsible Section */
+        .collapsible {
+            margin-top: 24px;
+        }
+
+        .collapsible-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 12px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+        }
+
+        .collapsible-header h2 {
+            font-size: 1rem;
+        }
+
+        .collapsible-header .icon {
+            transition: transform 0.2s;
+        }
+
+        .collapsible-header.open .icon {
+            transform: rotate(90deg);
+        }
+
+        .collapsible-content {
+            display: none;
+            padding: 20px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-top: none;
+            border-radius: 0 0 var(--radius) var(--radius);
+        }
+
+        .collapsible-content.open {
+            display: block;
+        }
+
+        .architecture-diagram {
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 0.75rem;
+            white-space: pre;
+            overflow-x: auto;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        /* Loading State */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 15, 26, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .loading-overlay.hidden {
+            display: none;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--bg-tertiary);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--bg-tertiary);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--border);
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+    </div>
+
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>
+                <span>Development Tracker</span>
+            </h1>
+            <div class="header-controls">
+                <div class="mode-toggle">
+                    <button id="demoModeBtn" class="active" onclick="setMode('demo')">Demo Data</button>
+                    <button id="liveModeBtn" onclick="setMode('live')">Live Data</button>
+                </div>
+                <button class="refresh-btn" id="refreshBtn" onclick="refreshData()">
+                    <span>Refresh</span>
+                </button>
+                <span class="last-updated" id="lastUpdated"></span>
+            </div>
+        </header>
+
+        <!-- Summary Cards -->
+        <div class="summary-cards">
+            <div class="card summary-card">
+                <div class="label">Dev Hours</div>
+                <div class="value" id="devHours">--</div>
+                <div class="subtext">Last 30 days</div>
+            </div>
+            <div class="card summary-card">
+                <div class="label">Time Saved</div>
+                <div class="value" id="timeSaved">--</div>
+                <div class="subtext">vs manual development</div>
+            </div>
+            <div class="card summary-card">
+                <div class="label">Cost Savings</div>
+                <div class="value money" id="costSavings">--</div>
+                <div class="subtext">at configured rate</div>
+            </div>
+            <div class="card summary-card">
+                <div class="label">Total Commits</div>
+                <div class="value" id="totalCommits">--</div>
+                <div class="subtext" id="commitsPerHour">-- commits/hr</div>
+            </div>
+        </div>
+
+        <!-- ROI Calculator & Activity Chart -->
+        <div class="grid-2">
+            <div class="card">
+                <div class="card-header">
+                    <h2>ROI Calculator</h2>
+                </div>
+                <div class="roi-calculator">
+                    <div class="roi-input-group">
+                        <label for="hourlyRate">Hourly Rate ($)</label>
+                        <input type="number" id="hourlyRate" value="75" onchange="recalculateROI()">
+                    </div>
+                    <div class="roi-input-group">
+                        <label for="multiplier">Manual Multiplier (x)</label>
+                        <input type="number" id="multiplier" value="2.5" step="0.1" onchange="recalculateROI()">
+                    </div>
+                    <div class="roi-formula" id="roiFormula">
+                        <div class="line">
+                            <span>Dev Hours:</span>
+                            <span id="roiDevHours">--</span>
+                        </div>
+                        <div class="line">
+                            <span>x Manual Multiplier:</span>
+                            <span id="roiMultiplier">2.5x</span>
+                        </div>
+                        <div class="line">
+                            <span>= Estimated Manual Hours:</span>
+                            <span id="roiManualHours">--</span>
+                        </div>
+                        <div class="line">
+                            <span>- Actual Dev Hours:</span>
+                            <span id="roiActualHours">--</span>
+                        </div>
+                        <div class="line result">
+                            <span>= Time Saved:</span>
+                            <span id="roiTimeSaved">--</span>
+                        </div>
+                        <div class="line result">
+                            <span>= Cost Savings:</span>
+                            <span id="roiCostSavings">--</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2>Activity (Last 14 Days)</h2>
+                </div>
+                <div class="chart-container">
+                    <canvas id="activityChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Commits & Projects -->
+        <div class="grid-3">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Recent Commits</h2>
+                    <select id="repoFilter" onchange="filterCommits()">
+                        <option value="all">All Repos</option>
+                    </select>
+                </div>
+                <div class="commit-list" id="commitList">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <div>
+                <div class="card" style="margin-bottom: 24px;">
+                    <div class="card-header">
+                        <h2>GitHub Repos</h2>
+                    </div>
+                    <div class="repo-grid" id="repoGrid">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Roadmap Projects</h2>
+                    </div>
+                    <div class="project-grid" id="projectGrid">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Project Mappings -->
+        <div class="card" style="margin-bottom: 24px;">
+            <div class="card-header">
+                <h2>Project Mappings</h2>
+            </div>
+            <table class="mappings-table">
+                <thead>
+                    <tr>
+                        <th>Repository</th>
+                        <th>Roadmap Project</th>
+                        <th>Auto-Sync</th>
+                    </tr>
+                </thead>
+                <tbody id="mappingsBody">
+                    <!-- Populated by JS -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- How It Works -->
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                <span class="icon">&#9654;</span>
+                <h2>How It Works</h2>
+            </div>
+            <div class="collapsible-content">
+                <pre class="architecture-diagram">
+┌─────────────────────────────────────────────────────────────────┐
+│                    DEVELOPMENT TRACKER                          │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  Claude Code Hooks          Git Hooks          SQLite DB        │
+│  ┌─────────────┐           ┌──────────┐       ┌──────────────┐  │
+│  │ PreToolUse  │──────────▶│          │       │              │  │
+│  │ PostToolUse │──────────▶│ track.sh │──────▶│ dev_tracker  │  │
+│  │ Stop        │──────────▶│          │       │    .db       │  │
+│  └─────────────┘           └──────────┘       └──────┬───────┘  │
+│                                                       │          │
+│                            ┌──────────┐               │          │
+│                            │ post-    │───────────────┘          │
+│                            │ commit   │                          │
+│                            └──────────┘                          │
+│                                                                  │
+│  ┌─────────────────────────────────────────────────────────────┐│
+│  │                    Dashboard & MCP Server                    ││
+│  │                                                              ││
+│  │  Data Sources:                                               ││
+│  │  • SQLite Database (sessions, commits, metrics)              ││
+│  │  • GitHub API (repos, commit history)                        ││
+│  │  • Roadmap API (projects, updates)                           ││
+│  │                                                              ││
+│  │  MCP Tools: list_projects, push_update, get_stats, etc.     ││
+│  └─────────────────────────────────────────────────────────────┘│
+│                              │                                   │
+│                              ▼                                   │
+│                    ┌──────────────────┐                         │
+│                    │   Roadmap API    │                         │
+│                    │ feedback.edwin   │                         │
+│                    │ lovett.com       │                         │
+│                    └──────────────────┘                         │
+└─────────────────────────────────────────────────────────────────┘
+
+ROI Calculation:
+━━━━━━━━━━━━━━━━
+Time Saved = Dev Hours × (Multiplier - 1)
+Cost Savings = Time Saved × Hourly Rate
+
+Default: 2.5x multiplier (industry standard for AI-assisted development)
+         $75/hour rate
+                </pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let currentData = null;
+        let currentMode = 'demo';
+        let activityChart = null;
+
+        // Format helpers
+        function formatNumber(num) {
+            if (num === null || num === undefined) return '--';
+            return new Intl.NumberFormat().format(Math.round(num));
+        }
+
+        function formatMoney(num) {
+            if (num === null || num === undefined) return '--';
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(num);
+        }
+
+        function formatDuration(hours) {
+            if (hours === null || hours === undefined) return '--';
+            const h = Math.floor(hours);
+            const m = Math.round((hours - h) * 60);
+            if (h === 0) return `${m}m`;
+            if (m === 0) return `${h}h`;
+            return `${h}h ${m}m`;
+        }
+
+        function formatRelativeTime(timestamp) {
+            if (!timestamp) return '--';
+            const date = new Date(timestamp);
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            const diffDays = Math.floor(diffMs / 86400000);
+
+            if (diffMins < 1) return 'just now';
+            if (diffMins < 60) return `${diffMins}m ago`;
+            if (diffHours < 24) return `${diffHours}h ago`;
+            if (diffDays < 7) return `${diffDays}d ago`;
+            return date.toLocaleDateString();
+        }
+
+        // Mode switching
+        function setMode(mode) {
+            currentMode = mode;
+            document.getElementById('demoModeBtn').classList.toggle('active', mode === 'demo');
+            document.getElementById('liveModeBtn').classList.toggle('active', mode === 'live');
+            loadData();
+        }
+
+        // Data loading
+        async function loadData() {
+            showLoading(true);
+            try {
+                const response = await fetch(`/api/data?mode=${currentMode}`);
+                currentData = await response.json();
+                renderDashboard();
+            } catch (error) {
+                console.error('Failed to load data:', error);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        async function refreshData() {
+            const btn = document.getElementById('refreshBtn');
+            btn.classList.add('loading');
+            btn.querySelector('span').textContent = 'Refreshing...';
+
+            try {
+                await fetch('/api/refresh', { method: 'POST' });
+                if (currentMode === 'live') {
+                    await loadData();
+                }
+            } catch (error) {
+                console.error('Failed to refresh:', error);
+            } finally {
+                btn.classList.remove('loading');
+                btn.querySelector('span').textContent = 'Refresh';
+            }
+        }
+
+        function showLoading(show) {
+            document.getElementById('loadingOverlay').classList.toggle('hidden', !show);
+        }
+
+        // Render functions
+        function renderDashboard() {
+            if (!currentData) return;
+
+            const summary = currentData.summary || {};
+            const roi = currentData.roi_calculation || {};
+
+            // Summary cards
+            document.getElementById('devHours').textContent = formatDuration(summary.total_dev_hours);
+            document.getElementById('timeSaved').textContent = formatDuration(summary.time_saved_hours);
+            document.getElementById('costSavings').textContent = formatMoney(summary.cost_savings);
+            document.getElementById('totalCommits').textContent = formatNumber(summary.total_commits);
+            document.getElementById('commitsPerHour').textContent =
+                `${(summary.avg_commits_per_hour || 0).toFixed(2)} commits/hr`;
+
+            // Last updated
+            document.getElementById('lastUpdated').textContent =
+                `Updated: ${formatRelativeTime(currentData.generated_at)}`;
+
+            // ROI Calculator
+            document.getElementById('hourlyRate').value = roi.hourly_rate || 75;
+            document.getElementById('multiplier').value = roi.multiplier || 2.5;
+            updateROIDisplay();
+
+            // Activity Chart
+            renderActivityChart();
+
+            // Commits
+            renderCommits();
+
+            // Repos
+            renderRepos();
+
+            // Projects
+            renderProjects();
+
+            // Mappings
+            renderMappings();
+
+            // Update repo filter
+            updateRepoFilter();
+        }
+
+        function updateROIDisplay() {
+            const roi = currentData?.roi_calculation || {};
+            const hourlyRate = parseFloat(document.getElementById('hourlyRate').value) || 75;
+            const multiplier = parseFloat(document.getElementById('multiplier').value) || 2.5;
+            const devHours = roi.dev_hours || 0;
+            const manualHours = devHours * multiplier;
+            const timeSaved = manualHours - devHours;
+            const costSavings = timeSaved * hourlyRate;
+
+            document.getElementById('roiDevHours').textContent = formatDuration(devHours);
+            document.getElementById('roiMultiplier').textContent = `${multiplier}x`;
+            document.getElementById('roiManualHours').textContent = formatDuration(manualHours);
+            document.getElementById('roiActualHours').textContent = formatDuration(devHours);
+            document.getElementById('roiTimeSaved').textContent = formatDuration(timeSaved);
+            document.getElementById('roiCostSavings').textContent = formatMoney(costSavings);
+        }
+
+        function recalculateROI() {
+            updateROIDisplay();
+            // Also update summary cards
+            const hourlyRate = parseFloat(document.getElementById('hourlyRate').value) || 75;
+            const multiplier = parseFloat(document.getElementById('multiplier').value) || 2.5;
+            const devHours = currentData?.roi_calculation?.dev_hours || 0;
+            const timeSaved = devHours * (multiplier - 1);
+            const costSavings = timeSaved * hourlyRate;
+
+            document.getElementById('timeSaved').textContent = formatDuration(timeSaved);
+            document.getElementById('costSavings').textContent = formatMoney(costSavings);
+        }
+
+        function renderActivityChart() {
+            const daily = currentData?.daily_activity || [];
+            const ctx = document.getElementById('activityChart').getContext('2d');
+
+            // Reverse to show chronological order
+            const data = [...daily].reverse();
+
+            if (activityChart) {
+                activityChart.destroy();
+            }
+
+            activityChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.map(d => {
+                        const date = new Date(d.date);
+                        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                    }),
+                    datasets: [
+                        {
+                            label: 'Hours',
+                            data: data.map(d => d.hours || 0),
+                            backgroundColor: 'rgba(99, 102, 241, 0.6)',
+                            borderColor: 'rgba(99, 102, 241, 1)',
+                            borderWidth: 1,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: 'Commits',
+                            data: data.map(d => d.commits || 0),
+                            type: 'line',
+                            borderColor: 'rgba(34, 197, 94, 1)',
+                            backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                            tension: 0.3,
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#94a3b8'
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: { color: '#64748b' },
+                            grid: { color: 'rgba(51, 65, 85, 0.3)' }
+                        },
+                        y: {
+                            type: 'linear',
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: 'Hours',
+                                color: '#94a3b8'
+                            },
+                            ticks: { color: '#64748b' },
+                            grid: { color: 'rgba(51, 65, 85, 0.3)' }
+                        },
+                        y1: {
+                            type: 'linear',
+                            position: 'right',
+                            title: {
+                                display: true,
+                                text: 'Commits',
+                                color: '#94a3b8'
+                            },
+                            ticks: { color: '#64748b' },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderCommits() {
+            const commits = currentData?.recent_commits || [];
+            const container = document.getElementById('commitList');
+            const filter = document.getElementById('repoFilter').value;
+
+            const filtered = filter === 'all'
+                ? commits
+                : commits.filter(c => c.repo === filter);
+
+            container.innerHTML = filtered.map(commit => `
+                <div class="commit-item">
+                    <div>
+                        <span class="commit-hash">${commit.hash || '--'}</span>
+                        <span class="commit-repo">${commit.repo || '--'}</span>
+                    </div>
+                    <div class="commit-message">${escapeHtml(commit.message || '')}</div>
+                    <div class="commit-stats">
+                        <span class="additions">+${commit.additions || 0}</span>
+                        <span class="deletions">-${commit.deletions || 0}</span>
+                        <span class="gap">${commit.gap_minutes ? Math.round(commit.gap_minutes) + 'm' : '--'}</span>
+                        <span class="${commit.synced_to_roadmap ? 'synced' : 'not-synced'}">
+                            ${commit.synced_to_roadmap ? '✓' : '○'}
+                        </span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateRepoFilter() {
+            const commits = currentData?.recent_commits || [];
+            const repos = [...new Set(commits.map(c => c.repo).filter(Boolean))];
+            const select = document.getElementById('repoFilter');
+
+            select.innerHTML = '<option value="all">All Repos</option>' +
+                repos.map(repo => `<option value="${repo}">${repo}</option>`).join('');
+        }
+
+        function filterCommits() {
+            renderCommits();
+        }
+
+        function renderRepos() {
+            const repos = currentData?.github_repos || [];
+            const container = document.getElementById('repoGrid');
+
+            container.innerHTML = repos.slice(0, 5).map(repo => `
+                <div class="repo-card">
+                    <h3>
+                        <a href="${repo.html_url || '#'}" target="_blank">${repo.name}</a>
+                        ${repo.private ? '<span class="private-badge">Private</span>' : ''}
+                    </h3>
+                    <p class="description">${escapeHtml(repo.description || 'No description')}</p>
+                    <div class="meta">
+                        <span>${repo.commit_count_30d || 0} commits (30d)</span>
+                        <span>${formatRelativeTime(repo.last_push)}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderProjects() {
+            const projects = currentData?.roadmap_projects || [];
+            const container = document.getElementById('projectGrid');
+
+            container.innerHTML = projects.slice(0, 5).map(project => {
+                const statusClass = (project.status || '').toLowerCase().replace(/\s+/g, '-');
+                return `
+                    <div class="project-card">
+                        <h3>
+                            ${project.name}
+                            <span class="status-badge ${statusClass}">${project.status || 'Unknown'}</span>
+                        </h3>
+                        <div class="meta">
+                            <span>v${project.current_version || '-'}</span>
+                            <span>${project.update_count || 0} updates</span>
+                            ${project.linked_repo ? `<span>→ ${project.linked_repo}</span>` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderMappings() {
+            const mappings = currentData?.project_mappings || [];
+            const container = document.getElementById('mappingsBody');
+
+            container.innerHTML = mappings.map(mapping => `
+                <tr>
+                    <td><code>${mapping.repo || mapping.repo_path || '--'}</code></td>
+                    <td>${mapping.project_name || '--'}</td>
+                    <td>
+                        <span class="auto-sync-badge ${mapping.auto_push ? 'enabled' : 'disabled'}">
+                            ${mapping.auto_push ? '✓ Enabled' : '○ Disabled'}
+                        </span>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Collapsible
+        function toggleCollapsible(header) {
+            header.classList.toggle('open');
+            header.nextElementSibling.classList.toggle('open');
+        }
+
+        // Utility
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData();
+        });
+    </script>
+</body>
+</html>

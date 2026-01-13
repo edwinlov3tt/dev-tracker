@@ -1,0 +1,377 @@
+{
+  "generated_at": "2025-01-13T10:30:00Z",
+  "data_mode": "demo",
+  "period_days": 30,
+  "summary": {
+    "total_dev_hours": 32.5,
+    "total_commits": 47,
+    "total_lines_added": 2847,
+    "total_lines_deleted": 892,
+    "time_saved_hours": 48.75,
+    "cost_savings": 3656.25,
+    "efficiency_percent": 78.5,
+    "avg_commits_per_hour": 1.45
+  },
+  "roi_calculation": {
+    "dev_hours": 32.5,
+    "multiplier": 2.5,
+    "estimated_manual_hours": 81.25,
+    "time_saved": 48.75,
+    "hourly_rate": 75,
+    "cost_savings": 3656.25,
+    "efficiency_gain_percent": 150
+  },
+  "daily_activity": [
+    {"date": "2025-01-13", "hours": 5.2, "active_hours": 4.1, "commits": 8, "lines_changed": 450},
+    {"date": "2025-01-12", "hours": 6.8, "active_hours": 5.3, "commits": 12, "lines_changed": 623},
+    {"date": "2025-01-11", "hours": 3.5, "active_hours": 2.8, "commits": 5, "lines_changed": 287},
+    {"date": "2025-01-10", "hours": 4.2, "active_hours": 3.4, "commits": 7, "lines_changed": 412},
+    {"date": "2025-01-09", "hours": 2.1, "active_hours": 1.7, "commits": 3, "lines_changed": 156},
+    {"date": "2025-01-08", "hours": 5.8, "active_hours": 4.6, "commits": 9, "lines_changed": 534},
+    {"date": "2025-01-07", "hours": 0, "active_hours": 0, "commits": 0, "lines_changed": 0},
+    {"date": "2025-01-06", "hours": 0, "active_hours": 0, "commits": 0, "lines_changed": 0},
+    {"date": "2025-01-05", "hours": 4.9, "active_hours": 3.9, "commits": 6, "lines_changed": 389},
+    {"date": "2025-01-04", "hours": 3.2, "active_hours": 2.5, "commits": 4, "lines_changed": 245},
+    {"date": "2025-01-03", "hours": 6.1, "active_hours": 4.9, "commits": 10, "lines_changed": 567},
+    {"date": "2025-01-02", "hours": 2.8, "active_hours": 2.2, "commits": 4, "lines_changed": 198},
+    {"date": "2025-01-01", "hours": 0, "active_hours": 0, "commits": 0, "lines_changed": 0},
+    {"date": "2024-12-31", "hours": 1.5, "active_hours": 1.2, "commits": 2, "lines_changed": 87}
+  ],
+  "recent_commits": [
+    {
+      "hash": "a1b2c3d4",
+      "repo": "canvas-editor",
+      "message": "feat: Add zoom controls with keyboard shortcuts",
+      "timestamp": "2025-01-13T09:45:00Z",
+      "additions": 127,
+      "deletions": 23,
+      "gap_minutes": 45,
+      "synced_to_roadmap": true
+    },
+    {
+      "hash": "e5f6g7h8",
+      "repo": "canvas-editor",
+      "message": "fix: Resolve layer ordering bug on paste",
+      "timestamp": "2025-01-13T09:00:00Z",
+      "additions": 34,
+      "deletions": 12,
+      "gap_minutes": 28,
+      "synced_to_roadmap": true
+    },
+    {
+      "hash": "i9j0k1l2",
+      "repo": "gtm-helper",
+      "message": "feat: Implement tag validation before publish",
+      "timestamp": "2025-01-13T08:32:00Z",
+      "additions": 89,
+      "deletions": 5,
+      "gap_minutes": 52,
+      "synced_to_roadmap": true
+    },
+    {
+      "hash": "m3n4o5p6",
+      "repo": "canvas-editor",
+      "message": "refactor: Extract shape rendering to separate module",
+      "timestamp": "2025-01-13T07:40:00Z",
+      "additions": 245,
+      "deletions": 189,
+      "gap_minutes": 35,
+      "synced_to_roadmap": false
+    },
+    {
+      "hash": "q7r8s9t0",
+      "repo": "dev-tracker",
+      "message": "feat: Add MCP server with Roadmap integration",
+      "timestamp": "2025-01-12T16:45:00Z",
+      "additions": 312,
+      "deletions": 0,
+      "gap_minutes": 67,
+      "synced_to_roadmap": true
+    },
+    {
+      "hash": "u1v2w3x4",
+      "repo": "gtm-helper",
+      "message": "fix: Handle empty container gracefully",
+      "timestamp": "2025-01-12T15:38:00Z",
+      "additions": 18,
+      "deletions": 4,
+      "gap_minutes": 22,
+      "synced_to_roadmap": true
+    },
+    {
+      "hash": "y5z6a7b8",
+      "repo": "canvas-editor",
+      "message": "feat: Add undo/redo with history limit",
+      "timestamp": "2025-01-12T15:16:00Z",
+      "additions": 156,
+      "deletions": 23,
+      "gap_minutes": 41,
+      "synced_to_roadmap": true
+    },
+    {
+      "hash": "c9d0e1f2",
+      "repo": "marketing-dashboard",
+      "message": "feat: Campaign performance charts",
+      "timestamp": "2025-01-12T14:35:00Z",
+      "additions": 234,
+      "deletions": 45,
+      "gap_minutes": 55,
+      "synced_to_roadmap": true
+    },
+    {
+      "hash": "g3h4i5j6",
+      "repo": "canvas-editor",
+      "message": "style: Update color palette to match brand",
+      "timestamp": "2025-01-12T13:40:00Z",
+      "additions": 67,
+      "deletions": 67,
+      "gap_minutes": 18,
+      "synced_to_roadmap": false
+    },
+    {
+      "hash": "k7l8m9n0",
+      "repo": "dev-tracker",
+      "message": "feat: Claude Code hooks for session tracking",
+      "timestamp": "2025-01-12T13:22:00Z",
+      "additions": 145,
+      "deletions": 12,
+      "gap_minutes": 33,
+      "synced_to_roadmap": true
+    },
+    {
+      "hash": "o1p2q3r4",
+      "repo": "gtm-helper",
+      "message": "docs: Add API documentation",
+      "timestamp": "2025-01-12T12:49:00Z",
+      "additions": 89,
+      "deletions": 0,
+      "gap_minutes": 27,
+      "synced_to_roadmap": false
+    },
+    {
+      "hash": "s5t6u7v8",
+      "repo": "canvas-editor",
+      "message": "feat: Shape rotation handles",
+      "timestamp": "2025-01-12T12:22:00Z",
+      "additions": 178,
+      "deletions": 34,
+      "gap_minutes": 45,
+      "synced_to_roadmap": true
+    },
+    {
+      "hash": "w9x0y1z2",
+      "repo": "marketing-dashboard",
+      "message": "fix: Date range picker timezone issue",
+      "timestamp": "2025-01-12T11:37:00Z",
+      "additions": 23,
+      "deletions": 15,
+      "gap_minutes": 19,
+      "synced_to_roadmap": true
+    },
+    {
+      "hash": "a3b4c5d6",
+      "repo": "canvas-editor",
+      "message": "perf: Optimize canvas rendering loop",
+      "timestamp": "2025-01-12T11:18:00Z",
+      "additions": 45,
+      "deletions": 78,
+      "gap_minutes": 38,
+      "synced_to_roadmap": true
+    },
+    {
+      "hash": "e7f8g9h0",
+      "repo": "gtm-helper",
+      "message": "feat: Bulk tag operations",
+      "timestamp": "2025-01-12T10:40:00Z",
+      "additions": 234,
+      "deletions": 12,
+      "gap_minutes": 52,
+      "synced_to_roadmap": true
+    },
+    {
+      "hash": "i1j2k3l4",
+      "repo": "canvas-editor",
+      "message": "feat: Export to PNG with transparency",
+      "timestamp": "2025-01-11T16:20:00Z",
+      "additions": 89,
+      "deletions": 23,
+      "gap_minutes": 65,
+      "synced_to_roadmap": true
+    },
+    {
+      "hash": "m5n6o7p8",
+      "repo": "dev-tracker",
+      "message": "feat: SQLite schema with views",
+      "timestamp": "2025-01-11T15:15:00Z",
+      "additions": 163,
+      "deletions": 0,
+      "gap_minutes": 42,
+      "synced_to_roadmap": true
+    },
+    {
+      "hash": "q9r0s1t2",
+      "repo": "marketing-dashboard",
+      "message": "feat: Real-time analytics updates",
+      "timestamp": "2025-01-11T14:33:00Z",
+      "additions": 189,
+      "deletions": 56,
+      "gap_minutes": 48,
+      "synced_to_roadmap": true
+    },
+    {
+      "hash": "u3v4w5x6",
+      "repo": "canvas-editor",
+      "message": "fix: Selection box offset on scroll",
+      "timestamp": "2025-01-11T13:45:00Z",
+      "additions": 12,
+      "deletions": 8,
+      "gap_minutes": 25,
+      "synced_to_roadmap": true
+    },
+    {
+      "hash": "y7z8a9b0",
+      "repo": "gtm-helper",
+      "message": "feat: Container version comparison",
+      "timestamp": "2025-01-11T13:20:00Z",
+      "additions": 267,
+      "deletions": 34,
+      "gap_minutes": 58,
+      "synced_to_roadmap": true
+    }
+  ],
+  "github_repos": [
+    {
+      "name": "canvas-editor",
+      "full_name": "edwinlovettiii/canvas-editor",
+      "description": "HTML5 Canvas-based visual editor for marketing assets",
+      "last_push": "2025-01-13T09:45:00Z",
+      "default_branch": "main",
+      "html_url": "https://github.com/edwinlovettiii/canvas-editor",
+      "private": false,
+      "commit_count_30d": 23
+    },
+    {
+      "name": "gtm-helper",
+      "full_name": "edwinlovettiii/gtm-helper",
+      "description": "Google Tag Manager automation and validation tools",
+      "last_push": "2025-01-13T08:32:00Z",
+      "default_branch": "main",
+      "html_url": "https://github.com/edwinlovettiii/gtm-helper",
+      "private": true,
+      "commit_count_30d": 12
+    },
+    {
+      "name": "dev-tracker",
+      "full_name": "edwinlovettiii/dev-tracker",
+      "description": "AI-assisted development time tracking and ROI reporting",
+      "last_push": "2025-01-12T16:45:00Z",
+      "default_branch": "main",
+      "html_url": "https://github.com/edwinlovettiii/dev-tracker",
+      "private": false,
+      "commit_count_30d": 8
+    },
+    {
+      "name": "marketing-dashboard",
+      "full_name": "edwinlovettiii/marketing-dashboard",
+      "description": "Unified marketing analytics dashboard",
+      "last_push": "2025-01-12T14:35:00Z",
+      "default_branch": "main",
+      "html_url": "https://github.com/edwinlovettiii/marketing-dashboard",
+      "private": true,
+      "commit_count_30d": 6
+    },
+    {
+      "name": "roadmap-api",
+      "full_name": "edwinlovettiii/roadmap-api",
+      "description": "Product roadmap and feedback collection API",
+      "last_push": "2025-01-08T11:20:00Z",
+      "default_branch": "main",
+      "html_url": "https://github.com/edwinlovettiii/roadmap-api",
+      "private": true,
+      "commit_count_30d": 4
+    }
+  ],
+  "roadmap_projects": [
+    {
+      "name": "Canvas Editor",
+      "api_key": "ce-abc123-def456",
+      "status": "In Development",
+      "current_version": "0.3.0",
+      "update_count": 15,
+      "description": "Visual editor for creating marketing assets",
+      "linked_repo": "canvas-editor"
+    },
+    {
+      "name": "GTM Helper",
+      "api_key": "gtm-789xyz-123abc",
+      "status": "In Development",
+      "current_version": "1.2.0",
+      "update_count": 8,
+      "description": "Automate Google Tag Manager workflows",
+      "linked_repo": "gtm-helper"
+    },
+    {
+      "name": "Dev Tracker",
+      "api_key": "dt-456def-789ghi",
+      "status": "In Development",
+      "current_version": "0.1.0",
+      "update_count": 5,
+      "description": "Track AI-assisted development productivity",
+      "linked_repo": "dev-tracker"
+    },
+    {
+      "name": "Marketing Dashboard",
+      "api_key": "md-111aaa-222bbb",
+      "status": "Beta",
+      "current_version": "2.0.0-beta",
+      "update_count": 12,
+      "description": "Unified analytics for marketing campaigns",
+      "linked_repo": "marketing-dashboard"
+    },
+    {
+      "name": "Roadmap Platform",
+      "api_key": "rp-333ccc-444ddd",
+      "status": "Stable",
+      "current_version": "3.1.0",
+      "update_count": 24,
+      "description": "Product feedback and roadmap management",
+      "linked_repo": "roadmap-api"
+    }
+  ],
+  "project_mappings": [
+    {
+      "repo_path": "/Users/edwinlovettiii/canvas-editor",
+      "repo": "canvas-editor",
+      "project_name": "Canvas Editor",
+      "project_api_key": "ce-abc123-def456",
+      "auto_push": true
+    },
+    {
+      "repo_path": "/Users/edwinlovettiii/gtm-helper",
+      "repo": "gtm-helper",
+      "project_name": "GTM Helper",
+      "project_api_key": "gtm-789xyz-123abc",
+      "auto_push": true
+    },
+    {
+      "repo_path": "/Users/edwinlovettiii/dev-tracker",
+      "repo": "dev-tracker",
+      "project_name": "Dev Tracker",
+      "project_api_key": "dt-456def-789ghi",
+      "auto_push": true
+    },
+    {
+      "repo_path": "/Users/edwinlovettiii/marketing-dashboard",
+      "repo": "marketing-dashboard",
+      "project_name": "Marketing Dashboard",
+      "project_api_key": "md-111aaa-222bbb",
+      "auto_push": false
+    }
+  ],
+  "active_sessions": 1,
+  "commit_velocity": {
+    "avg_gap_minutes": 38.5,
+    "commits_per_hour": 1.45,
+    "lines_per_hour": 115
+  }
+}
