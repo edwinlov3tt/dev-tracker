@@ -1,5 +1,6 @@
 #!/bin/bash
 # Setup script for Development Tracker
+# Safe to run multiple times (idempotent)
 
 set -e
 
@@ -10,6 +11,7 @@ echo "🚀 Setting up Development Tracker..."
 
 # Create directories
 mkdir -p "$TRACKER_DIR/hooks"
+mkdir -p "$TRACKER_DIR/logs"
 
 # Initialize database
 if [ ! -f "$DB_PATH" ]; then
@@ -64,23 +66,44 @@ ROADMAP_API_TOKEN=your_64_character_token_here
 EOF
 echo "✅ Environment template created"
 
+# Make service script executable
+chmod +x "$TRACKER_DIR/service.sh"
+echo "✅ Service manager ready"
+
+# Install and start the dashboard service
+echo "📦 Installing dashboard service..."
+"$TRACKER_DIR/service.sh" install
+
 echo ""
 echo "=========================================="
 echo "🎉 Setup complete!"
 echo "=========================================="
 echo ""
+echo "Dashboard Service:"
+echo "  Start:   $TRACKER_DIR/service.sh start"
+echo "  Stop:    $TRACKER_DIR/service.sh stop"
+echo "  Status:  $TRACKER_DIR/service.sh status"
+echo "  Logs:    $TRACKER_DIR/service.sh logs"
+echo ""
+echo "The dashboard auto-starts on login and auto-restarts on crash."
+echo ""
 echo "Next steps:"
 echo ""
-echo "1. Set your Roadmap API token:"
+echo "1. Start the dashboard:"
+echo "   $TRACKER_DIR/service.sh start"
+echo ""
+echo "2. Set your Roadmap API token (optional):"
 echo "   export ROADMAP_API_TOKEN='your_token_here'"
 echo ""
-echo "2. Add the MCP server to your Claude configuration."
+echo "3. Add the MCP server to your Claude configuration."
 echo "   See: $TRACKER_DIR/mcp_config.json"
 echo ""
-echo "3. Install the git hook in your repos:"
+echo "4. Install the git hook in your repos:"
 echo "   cp $TRACKER_DIR/hooks/post-commit /path/to/repo/.git/hooks/"
 echo ""
-echo "4. Link your repos to projects:"
+echo "5. Link your repos to projects:"
 echo "   $TRACKER_DIR/hooks/track.sh link 'api-key' 'Project Name'"
+echo ""
+echo "Dashboard URL: http://localhost:8080"
 echo ""
 echo "Happy tracking! 📊"
