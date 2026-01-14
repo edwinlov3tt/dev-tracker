@@ -26,6 +26,7 @@ from pydantic import BaseModel
 DB_PATH = os.environ.get("DEV_TRACKER_DB", Path.home() / "dev-tracker" / "dev_tracker.db")
 ROADMAP_API_BASE = "https://feedback.edwinlovett.com/roadmap/api/v1"
 ROADMAP_API_TOKEN = os.environ.get("ROADMAP_API_TOKEN", "")
+HOURLY_RATE = float(os.environ.get("DEV_TRACKER_HOURLY_RATE", "75"))
 
 # Initialize MCP server
 server = Server("dev-tracker")
@@ -458,8 +459,7 @@ async def generate_roi_report(days: int = 30) -> list[TextContent]:
     
     t = totals[0] if totals else {}
     
-    # Assumptions for ROI calculation
-    HOURLY_RATE = 75  # Internal hourly rate
+    # Assumptions for ROI calculation (HOURLY_RATE from config/env)
     MANUAL_MULTIPLIER = 2.5  # How much longer it would take without AI
     
     total_hours = t.get('total_hours', 0) or 0

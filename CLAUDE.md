@@ -77,9 +77,10 @@ Key views:
 ## Environment Variables
 
 ```bash
-ROADMAP_API_TOKEN   # Required: 64-char API token for Roadmap
-DEV_TRACKER_DB      # Optional: Path to SQLite DB (default: ~/dev-tracker/dev_tracker.db)
-DEV_TRACKER_LOG     # Optional: Path to log file
+ROADMAP_API_TOKEN        # Required: 64-char API token for Roadmap
+DEV_TRACKER_DB           # Optional: Path to SQLite DB (default: ~/dev-tracker/dev_tracker.db)
+DEV_TRACKER_LOG          # Optional: Path to log file
+DEV_TRACKER_HOURLY_RATE  # Optional: Hourly rate for ROI calculations (default: 75)
 ```
 
 ## MCP Server Tools
@@ -100,3 +101,85 @@ The system uses these formulas:
 - Manual Multiplier: 2.5x (industry standard for AI-assisted dev)
 - Time Saved = Dev Hours × (Multiplier - 1)
 - Cost Savings = Time Saved × $75/hour
+
+---
+
+# Documentation Protocol
+
+This project uses an automated documentation system. Follow these protocols to keep documentation current and accurate.
+
+---
+
+## Quick Reference
+
+| Command | When to Use | Example |
+|---------|-------------|---------|
+| `/doc` | After every coding session | `/doc` |
+| `/issue` | When you find a bug or edge case | `/issue API timeout on large payloads` |
+| `/decision` | When you make a technical choice | `/decision Using Redis over Memcached` |
+| `/service` | When you add/modify external service | `/service Stripe` |
+| `/audit` | Full project analysis (periodic) | `/audit` |
+| `/doc-status` | Check documentation health | `/doc-status` |
+| `/handoff` | Before sharing with another dev | `/handoff` |
+
+---
+
+## Documentation Locations
+
+| Document | Purpose | Update Frequency |
+|----------|---------|------------------|
+| `.claude/docs/CHANGELOG.md` | What changed and when | Every session |
+| `.claude/docs/KNOWN_ISSUES.md` | Bugs, edge cases, tech debt | When discovered |
+| `.claude/docs/DECISIONS.md` | Why things were built this way | When deciding |
+| `.claude/docs/ARCHITECTURE.md` | System overview, env vars | When structure changes |
+| `.claude/docs/services/*.md` | External service integrations | When services change |
+| `.claude/docs/components/*.md` | Internal component docs | When components change |
+
+---
+
+## Workflow Rules
+
+### After Every Coding Session
+Run `/doc` to:
+- Update CHANGELOG.md with what was done
+- Flag any new issues discovered
+- Update affected service/component docs
+
+### When You Encounter a Bug or Edge Case
+Run `/issue [description]` immediately. Don't trust your memory.
+
+### When You Make a Non-Obvious Technical Decision
+Run `/decision [what you decided]` to capture context for future developers.
+
+### When You Add or Modify External Services
+Run `/service [service name]` to document the integration.
+
+### Before Handing Off to Another Developer
+Run `/handoff` to generate a comprehensive onboarding document.
+
+---
+
+## Issue Severity Guide
+
+| Level | Description | Example |
+|-------|-------------|---------|
+| CRITICAL | System unusable, data loss risk | Auth completely broken |
+| HIGH | Major feature broken, no workaround | Checkout fails silently |
+| MEDIUM | Feature impaired, workaround exists | Export works but slow |
+| LOW | Minor inconvenience | Typo in error message |
+
+---
+
+## Decision Recording Guide
+
+Record a decision when:
+- Choosing between technologies (e.g., "Why Cloudflare over Vercel")
+- Designing data models or APIs
+- Setting up infrastructure
+- Establishing patterns that will be repeated
+- Making tradeoffs that won't be obvious later
+
+Don't record:
+- Obvious choices (standard patterns)
+- Temporary implementations
+- Personal preferences without project impact

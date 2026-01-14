@@ -11,6 +11,7 @@ from pathlib import Path
 from datetime import datetime
 
 DB_PATH = os.environ.get("DEV_TRACKER_DB", Path.home() / "dev-tracker" / "dev_tracker.db")
+HOURLY_RATE = float(os.environ.get("DEV_TRACKER_HOURLY_RATE", "75"))
 
 def get_db():
     conn = sqlite3.connect(DB_PATH)
@@ -59,8 +60,7 @@ def main():
     print(f"   Lines Changed:  +{adds:,} / -{dels:,}")
     print(f"   Velocity:       {(commits/max(hours,1)):.2f} commits/hr")
     
-    # ROI calculation
-    HOURLY_RATE = 75
+    # ROI calculation (HOURLY_RATE from config/env)
     MULTIPLIER = 2.5
     time_saved = hours * (MULTIPLIER - 1)
     savings = time_saved * HOURLY_RATE
