@@ -1,0 +1,26 @@
+name = "dev-tracker"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+# D1 Database binding
+[[d1_databases]]
+binding = "DB"
+database_name = "dev-tracker"
+database_id = "" # Will be populated after `wrangler d1 create dev-tracker`
+
+# Environment variables (set via wrangler secret)
+# API_TOKEN - Required for authenticating hook requests
+
+[vars]
+ENVIRONMENT = "production"
+
+# Local development
+[dev]
+port = 8787
+local_protocol = "http"
+
+# For local D1 development
+[[d1_databases]]
+binding = "DB"
+database_name = "dev-tracker"
+database_id = "local"
