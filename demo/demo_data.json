@@ -344,6 +344,7 @@
       "repo": "canvas-editor",
       "project_name": "Canvas Editor",
       "project_api_key": "ce-abc123-def456",
+      "phase": "development",
       "auto_push": true
     },
     {
@@ -351,6 +352,7 @@
       "repo": "gtm-helper",
       "project_name": "GTM Helper",
       "project_api_key": "gtm-789xyz-123abc",
+      "phase": "development",
       "auto_push": true
     },
     {
@@ -358,6 +360,7 @@
       "repo": "dev-tracker",
       "project_name": "Dev Tracker",
       "project_api_key": "dt-456def-789ghi",
+      "phase": "ideation",
       "auto_push": true
     },
     {
@@ -365,6 +368,7 @@
       "repo": "marketing-dashboard",
       "project_name": "Marketing Dashboard",
       "project_api_key": "md-111aaa-222bbb",
+      "phase": "beta",
       "auto_push": false
     }
   ],

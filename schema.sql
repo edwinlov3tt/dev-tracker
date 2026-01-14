@@ -51,9 +51,17 @@ CREATE TABLE IF NOT EXISTS project_mappings (
     repo_path TEXT UNIQUE NOT NULL,
     project_api_key TEXT NOT NULL,
     project_name TEXT,
+    phase TEXT DEFAULT 'development',  -- ideation, development, beta, live, maintenance
     auto_push_updates INTEGER DEFAULT 1,  -- Auto-send updates on commit
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Phase determines capitalization eligibility:
+-- ideation = expensed (preliminary stage)
+-- development = capitalizable (application development stage)
+-- beta = capitalizable (still in development)
+-- live = expensed (post-implementation)
+-- maintenance = expensed (ongoing support)
 
 -- Daily summaries: aggregated metrics by day
 CREATE TABLE IF NOT EXISTS daily_summaries (
@@ -151,7 +159,7 @@ GROUP BY commit_date, repo_path;
 
 -- Time between commits view
 CREATE VIEW IF NOT EXISTS v_commit_gaps AS
-SELECT 
+SELECT
     c1.repo_path,
     c1.commit_hash,
     c1.timestamp as commit_time,
@@ -160,3 +168,21 @@ SELECT
     (c1.timestamp - LAG(c1.timestamp) OVER (PARTITION BY c1.repo_path ORDER BY c1.timestamp)) / 60.0 as gap_minutes
 FROM commits c1
 ORDER BY c1.repo_path, c1.timestamp;
+
+-- Accounting report view: summarizes time by project with capitalization status
+CREATE VIEW IF NOT EXISTS v_accounting_report AS
+SELECT
+    ds.date,
+    COALESCE(pm.project_name, 'Unlinked') as project_name,
+    pm.phase,
+    CASE
+        WHEN pm.phase IN ('development', 'beta') THEN 'Yes'
+        ELSE 'No'
+    END as capitalizable,
+    ds.total_dev_hours as hours,
+    ds.total_commits as commits,
+    ds.total_insertions + ds.total_deletions as lines_changed,
+    ds.repo_path
+FROM daily_summaries ds
+LEFT JOIN project_mappings pm ON ds.repo_path = pm.repo_path
+ORDER BY ds.date DESC, pm.project_name;

@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How It Works - Development Tracker</title>
+    <style>
+        :root {
+            --bg-primary: #0f0f1a;
+            --bg-secondary: #1a1a2e;
+            --bg-tertiary: #252542;
+            --primary: #6366f1;
+            --primary-dim: #4f46e5;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --text-primary: #e2e8f0;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --radius: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 48px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+
+        .back-btn {
+            padding: 10px 20px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            border-radius: var(--radius);
+            text-decoration: none;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn:hover {
+            border-color: var(--primary);
+            background: var(--bg-tertiary);
+        }
+
+        .download-btn {
+            padding: 10px 20px;
+            background: var(--primary);
+            border: 1px solid var(--primary);
+            color: white;
+            border-radius: var(--radius);
+            text-decoration: none;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+
+        .download-btn:hover {
+            background: #5558e3;
+            border-color: #5558e3;
+        }
+
+        .download-btn span {
+            font-size: 1.1rem;
+        }
+
+        /* Table of Contents */
+        .toc {
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 48px;
+            border: 1px solid var(--border);
+        }
+
+        .toc h2 {
+            font-size: 1.125rem;
+            margin-bottom: 16px;
+            color: var(--text-secondary);
+        }
+
+        .toc ul {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 8px;
+        }
+
+        .toc a {
+            color: var(--primary);
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            display: block;
+            transition: background 0.2s;
+        }
+
+        .toc a:hover {
+            background: var(--bg-tertiary);
+        }
+
+        /* Sections */
+        section {
+            margin-bottom: 64px;
+        }
+
+        section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        section h2 .num {
+            background: var(--primary);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        section h3 {
+            font-size: 1.125rem;
+            margin: 32px 0 16px;
+            color: var(--text-secondary);
+        }
+
+        section p {
+            margin-bottom: 16px;
+            color: var(--text-secondary);
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+        }
+
+        .card.highlight {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, rgba(99, 102, 241, 0.1) 100%);
+        }
+
+        .card h4 {
+            font-size: 1rem;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        /* Code blocks */
+        pre, code {
+            font-family: 'Monaco', 'Consolas', 'Courier New', monospace;
+        }
+
+        pre {
+            background: var(--bg-tertiary);
+            border-radius: var(--radius);
+            padding: 20px;
+            overflow-x: auto;
+            margin: 16px 0;
+            border: 1px solid var(--border);
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+
+        code {
+            background: var(--bg-tertiary);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.875rem;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+        }
+
+        .code-title {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Diagrams */
+        .diagram {
+            background: var(--bg-tertiary);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin: 24px 0;
+            overflow-x: auto;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 0.8rem;
+            line-height: 1.4;
+            white-space: pre;
+            border: 1px solid var(--border);
+        }
+
+        /* Step indicators */
+        .steps {
+            counter-reset: step;
+        }
+
+        .step {
+            position: relative;
+            padding-left: 60px;
+            margin-bottom: 32px;
+        }
+
+        .step::before {
+            counter-increment: step;
+            content: counter(step);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: white;
+        }
+
+        .step::after {
+            content: '';
+            position: absolute;
+            left: 19px;
+            top: 44px;
+            bottom: -28px;
+            width: 2px;
+            background: var(--border);
+        }
+
+        .step:last-child::after {
+            display: none;
+        }
+
+        .step h4 {
+            font-size: 1.125rem;
+            margin-bottom: 8px;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.875rem;
+        }
+
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: var(--bg-tertiary);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        td {
+            color: var(--text-secondary);
+        }
+
+        tr:hover td {
+            background: var(--bg-tertiary);
+        }
+
+        /* Formula boxes */
+        .formula {
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, rgba(99, 102, 241, 0.15) 100%);
+            border: 2px solid var(--primary);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin: 24px 0;
+            text-align: center;
+        }
+
+        .formula .main {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            font-family: 'Monaco', monospace;
+        }
+
+        .formula .note {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        /* Lists */
+        ul, ol {
+            margin: 16px 0;
+            padding-left: 24px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge.hook {
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--primary);
+        }
+
+        .badge.event {
+            background: rgba(34, 197, 94, 0.2);
+            color: var(--success);
+        }
+
+        .badge.data {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+        }
+
+        /* Grid layout for hooks */
+        .hook-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin: 24px 0;
+        }
+
+        .hook-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+        }
+
+        .hook-card h4 {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .hook-card .timing {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        /* Env vars table */
+        .env-var {
+            font-family: monospace;
+            color: var(--success);
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 64px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 16px;
+                text-align: center;
+            }
+
+            .step {
+                padding-left: 50px;
+            }
+
+            .step::before {
+                width: 32px;
+                height: 32px;
+                font-size: 0.875rem;
+            }
+
+            .step::after {
+                left: 15px;
+                top: 36px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>How Development Tracker Works</h1>
+            <div style="display: flex; gap: 12px;">
+                <a href="/api/steps/download" class="download-btn" download="dev-tracker-guide.md">
+                    <span>&#8595;</span> Download MD
+                </a>
+                <a href="/" class="back-btn">
+                    <span>&larr;</span> Back to Dashboard
+                </a>
+            </div>
+        </header>
+
+        <!-- Table of Contents -->
+        <nav class="toc">
+            <h2>Contents</h2>
+            <ul>
+                <li><a href="#installation">1. Installation Guide</a></li>
+                <li><a href="#architecture">2. System Architecture</a></li>
+                <li><a href="#hooks">3. Hook Execution Flow</a></li>
+                <li><a href="#database">4. Database Schema</a></li>
+                <li><a href="#roi">5. ROI Calculations</a></li>
+                <li><a href="#mcp">6. MCP Server Tools</a></li>
+                <li><a href="#config">7. Configuration</a></li>
+                <li><a href="#troubleshooting">8. Troubleshooting</a></li>
+            </ul>
+        </nav>
+
+        <!-- Section 1: Installation -->
+        <section id="installation">
+            <h2><span class="num">1</span> Installation Guide</h2>
+
+            <p>Follow these steps to set up Development Tracker with Claude Code.</p>
+
+            <div class="steps">
+                <div class="step">
+                    <h4>Clone or Download the Repository</h4>
+                    <pre><code>git clone https://github.com/edwinlov3tt/dev-tracker.git ~/dev-tracker
+cd ~/dev-tracker</code></pre>
+                </div>
+
+                <div class="step">
+                    <h4>Run the Setup Script</h4>
+                    <p>This initializes the database, installs dependencies, and configures Claude Code hooks.</p>
+                    <pre><code>chmod +x setup.sh
+./setup.sh</code></pre>
+                </div>
+
+                <div class="step">
+                    <h4>Set Environment Variables</h4>
+                    <p>Add these to your shell profile (<code>~/.zshrc</code> or <code>~/.bashrc</code>):</p>
+                    <pre><code># Required for Roadmap API integration
+export ROADMAP_API_TOKEN="your_64_character_token"
+
+# Optional: Custom hourly rate for ROI calculations (default: $75)
+export DEV_TRACKER_HOURLY_RATE="100"
+
+# Optional: Custom database location
+export DEV_TRACKER_DB="$HOME/dev-tracker/dev_tracker.db"</code></pre>
+                </div>
+
+                <div class="step">
+                    <h4>Configure MCP Server in Claude Code</h4>
+                    <p>Add the MCP server to your Claude Code configuration:</p>
+                    <div class="code-title">~/.claude/config.json</div>
+                    <pre><code>{
+  "mcpServers": {
+    "dev-tracker": {
+      "command": "python3",
+      "args": ["$HOME/dev-tracker/server.py"],
+      "env": {
+        "ROADMAP_API_TOKEN": "your_token_here"
+      }
+    }
+  }
+}</code></pre>
+                </div>
+
+                <div class="step">
+                    <h4>Install Git Hooks (Per Repository)</h4>
+                    <p>For each repository you want to track commits:</p>
+                    <pre><code>cp ~/dev-tracker/hooks/post-commit /path/to/your/repo/.git/hooks/
+chmod +x /path/to/your/repo/.git/hooks/post-commit</code></pre>
+                </div>
+
+                <div class="step">
+                    <h4>Verify Installation</h4>
+                    <pre><code># Check that hooks are configured
+cat ~/.claude/hooks.json
+
+# Test the tracking script
+~/dev-tracker/hooks/track.sh stats
+
+# Start the dashboard
+cd ~/dev-tracker/demo && ./run.sh</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Architecture -->
+        <section id="architecture">
+            <h2><span class="num">2</span> System Architecture</h2>
+
+            <p>Development Tracker consists of four main components that work together to capture, store, and visualize your development metrics.</p>
+
+            <div class="diagram">
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                           DEVELOPMENT TRACKER SYSTEM                             │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                  │
+│   ┌──────────────────┐                                                          │
+│   │   CLAUDE CODE    │                                                          │
+│   │                  │                                                          │
+│   │  ┌────────────┐  │     ┌─────────────┐      ┌──────────────────┐           │
+│   │  │ PreToolUse │──┼────▶│             │      │                  │           │
+│   │  └────────────┘  │     │  track.sh   │─────▶│   SQLite DB      │           │
+│   │  ┌────────────┐  │     │             │      │  dev_tracker.db  │           │
+│   │  │PostToolUse │──┼────▶│  (Bash)     │      │                  │           │
+│   │  └────────────┘  │     │             │      │  • sessions      │           │
+│   │  ┌────────────┐  │     └─────────────┘      │  • tool_events   │           │
+│   │  │   Stop     │──┼────────────┘             │  • commits       │           │
+│   │  └────────────┘  │                          │  • summaries     │           │
+│   └──────────────────┘                          └────────┬─────────┘           │
+│                                                          │                      │
+│   ┌──────────────────┐                                   │                      │
+│   │    GIT REPO      │                                   │                      │
+│   │  ┌────────────┐  │     ┌─────────────┐              │                      │
+│   │  │post-commit │──┼────▶│  track.sh   │──────────────┘                      │
+│   │  │   hook     │  │     │  commit     │                                      │
+│   │  └────────────┘  │     └─────────────┘                                      │
+│   └──────────────────┘                                                          │
+│                                                                                  │
+│   ┌─────────────────────────────────────────────────────────────────────────┐  │
+│   │                         MCP SERVER (server.py)                           │  │
+│   │                                                                          │  │
+│   │   Reads from SQLite DB    ◄──────────────────────────────────────────   │  │
+│   │                                                                          │  │
+│   │   Tools:  • get_dev_stats        • list_roadmap_projects                │  │
+│   │           • get_recent_commits   • push_project_update                  │  │
+│   │           • generate_roi_report  • link_repo_to_project                 │  │
+│   │                                                                          │  │
+│   └────────────────────────────────────┬────────────────────────────────────┘  │
+│                                        │                                        │
+│                                        ▼                                        │
+│                           ┌──────────────────────┐                             │
+│                           │    ROADMAP API       │                             │
+│                           │ feedback.edwinlovett │                             │
+│                           │      .com            │                             │
+│                           └──────────────────────┘                             │
+│                                                                                  │
+│   ┌─────────────────────────────────────────────────────────────────────────┐  │
+│   │                         DASHBOARD (FastAPI)                              │  │
+│   │                                                                          │  │
+│   │   • Serves web UI at localhost:8080                                     │  │
+│   │   • Aggregates data from SQLite + GitHub API + Roadmap API              │  │
+│   │   • Real-time metrics visualization                                      │  │
+│   └─────────────────────────────────────────────────────────────────────────┘  │
+│                                                                                  │
+└─────────────────────────────────────────────────────────────────────────────────┘</div>
+
+            <h3>Component Overview</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>File</th>
+                        <th>Purpose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Hook Script</td>
+                        <td><code>hooks/track.sh</code></td>
+                        <td>Captures events from Claude Code and Git, writes to SQLite</td>
+                    </tr>
+                    <tr>
+                        <td>MCP Server</td>
+                        <td><code>server.py</code></td>
+                        <td>Exposes tools to Claude Code for querying stats and pushing updates</td>
+                    </tr>
+                    <tr>
+                        <td>Database</td>
+                        <td><code>dev_tracker.db</code></td>
+                        <td>SQLite database storing all tracking data</td>
+                    </tr>
+                    <tr>
+                        <td>Dashboard</td>
+                        <td><code>demo/server.py</code></td>
+                        <td>Web UI for visualizing metrics</td>
+                    </tr>
+                    <tr>
+                        <td>Data Collector</td>
+                        <td><code>demo/data_collector.py</code></td>
+                        <td>Aggregates data from multiple sources into JSON</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Section 3: Hooks -->
+        <section id="hooks">
+            <h2><span class="num">3</span> Hook Execution Flow</h2>
+
+            <p>Claude Code hooks are the primary data collection mechanism. They fire automatically during your coding sessions.</p>
+
+            <h3>Claude Code Hooks</h3>
+            <p>These are configured in <code>~/.claude/hooks.json</code> and execute automatically:</p>
+
+            <div class="hook-grid">
+                <div class="hook-card">
+                    <h4><span class="badge hook">PreToolUse</span></h4>
+                    <p>Fires <strong>before</strong> Claude executes any tool (Read, Write, Edit, Bash, etc.)</p>
+                    <pre><code>track.sh tool_start "Read"</code></pre>
+                    <div class="timing">
+                        <strong>Records:</strong> session_id, tool_name, timestamp, event_type='start'
+                    </div>
+                </div>
+
+                <div class="hook-card">
+                    <h4><span class="badge hook">PostToolUse</span></h4>
+                    <p>Fires <strong>after</strong> Claude completes any tool execution</p>
+                    <pre><code>track.sh tool_end "Read" 0</code></pre>
+                    <div class="timing">
+                        <strong>Records:</strong> session_id, tool_name, exit_code, timestamp, event_type='end'
+                    </div>
+                </div>
+
+                <div class="hook-card">
+                    <h4><span class="badge hook">Stop</span></h4>
+                    <p>Fires when a Claude Code session ends (user exits or timeout)</p>
+                    <pre><code>track.sh end</code></pre>
+                    <div class="timing">
+                        <strong>Records:</strong> session end time, total tool calls, status='completed'
+                    </div>
+                </div>
+            </div>
+
+            <h3>Git Hook</h3>
+            <div class="hook-grid">
+                <div class="hook-card">
+                    <h4><span class="badge event">post-commit</span></h4>
+                    <p>Fires after every successful <code>git commit</code></p>
+                    <pre><code>track.sh commit</code></pre>
+                    <div class="timing">
+                        <strong>Records:</strong> commit_hash, message, author, branch, files_changed, insertions, deletions, timestamp
+                    </div>
+                </div>
+            </div>
+
+            <h3>Hook Configuration File</h3>
+            <div class="code-title">~/.claude/hooks.json</div>
+            <pre><code>{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/dev-tracker/hooks/track.sh tool_start \"$TOOL_NAME\""
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/dev-tracker/hooks/track.sh tool_end \"$TOOL_NAME\" \"$EXIT_CODE\""
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/dev-tracker/hooks/track.sh end"
+          }
+        ]
+      }
+    ]
+  }
+}</code></pre>
+
+            <h3>Session ID Generation</h3>
+            <p>Sessions are uniquely identified by combining the date and a hash of the working directory:</p>
+            <pre><code># Format: session_YYYYMMDD_XXXXXXXX
+# Example: session_20250114_a3b8c9d2
+
+session_id = "session_" + date(YYYYMMDD) + "_" + md5(pwd).substring(0,8)</code></pre>
+            <p>This ensures that:</p>
+            <ul>
+                <li>Each day starts a new session per project</li>
+                <li>Different directories have different sessions</li>
+                <li>Sessions can be resumed throughout the day</li>
+            </ul>
+        </section>
+
+        <!-- Section 4: Database -->
+        <section id="database">
+            <h2><span class="num">4</span> Database Schema</h2>
+
+            <p>All data is stored in a local SQLite database at <code>~/dev-tracker/dev_tracker.db</code></p>
+
+            <h3>Tables</h3>
+
+            <div class="card">
+                <h4>sessions</h4>
+                <p>Tracks Claude Code working sessions</p>
+                <table>
+                    <thead>
+                        <tr><th>Column</th><th>Type</th><th>Description</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>session_id</td><td>TEXT PK</td><td>Unique session identifier</td></tr>
+                        <tr><td>repo_path</td><td>TEXT</td><td>Working directory path</td></tr>
+                        <tr><td>project_api_key</td><td>TEXT</td><td>Linked Roadmap project (if any)</td></tr>
+                        <tr><td>started_at</td><td>INTEGER</td><td>Unix timestamp of session start</td></tr>
+                        <tr><td>ended_at</td><td>INTEGER</td><td>Unix timestamp of session end</td></tr>
+                        <tr><td>status</td><td>TEXT</td><td>'active' or 'completed'</td></tr>
+                        <tr><td>total_tool_calls</td><td>INTEGER</td><td>Count of tools used in session</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h4>tool_events</h4>
+                <p>Individual tool execution events within sessions</p>
+                <table>
+                    <thead>
+                        <tr><th>Column</th><th>Type</th><th>Description</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>id</td><td>INTEGER PK</td><td>Auto-increment ID</td></tr>
+                        <tr><td>session_id</td><td>TEXT FK</td><td>Parent session</td></tr>
+                        <tr><td>tool_name</td><td>TEXT</td><td>Name of tool (Read, Write, Bash, etc.)</td></tr>
+                        <tr><td>event_type</td><td>TEXT</td><td>'start' or 'end'</td></tr>
+                        <tr><td>exit_code</td><td>INTEGER</td><td>Tool exit code (for 'end' events)</td></tr>
+                        <tr><td>timestamp</td><td>INTEGER</td><td>Unix timestamp</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h4>commits</h4>
+                <p>Git commits captured by post-commit hook</p>
+                <table>
+                    <thead>
+                        <tr><th>Column</th><th>Type</th><th>Description</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>commit_hash</td><td>TEXT PK</td><td>Git commit SHA</td></tr>
+                        <tr><td>repo_path</td><td>TEXT</td><td>Repository path</td></tr>
+                        <tr><td>session_id</td><td>TEXT</td><td>Associated session (if any)</td></tr>
+                        <tr><td>message</td><td>TEXT</td><td>Commit message</td></tr>
+                        <tr><td>author</td><td>TEXT</td><td>Commit author name</td></tr>
+                        <tr><td>branch</td><td>TEXT</td><td>Branch name</td></tr>
+                        <tr><td>timestamp</td><td>INTEGER</td><td>Commit timestamp</td></tr>
+                        <tr><td>files_changed</td><td>INTEGER</td><td>Number of files changed</td></tr>
+                        <tr><td>insertions</td><td>INTEGER</td><td>Lines added</td></tr>
+                        <tr><td>deletions</td><td>INTEGER</td><td>Lines deleted</td></tr>
+                        <tr><td>pushed_to_roadmap</td><td>INTEGER</td><td>1 if synced to Roadmap</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h4>daily_summaries</h4>
+                <p>Aggregated metrics per day per repository</p>
+                <table>
+                    <thead>
+                        <tr><th>Column</th><th>Type</th><th>Description</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>date</td><td>TEXT</td><td>Date (YYYY-MM-DD)</td></tr>
+                        <tr><td>repo_path</td><td>TEXT</td><td>Repository path</td></tr>
+                        <tr><td>total_sessions</td><td>INTEGER</td><td>Number of sessions</td></tr>
+                        <tr><td>total_dev_hours</td><td>REAL</td><td>Total development hours</td></tr>
+                        <tr><td>active_coding_hours</td><td>REAL</td><td>Active coding time</td></tr>
+                        <tr><td>total_commits</td><td>INTEGER</td><td>Number of commits</td></tr>
+                        <tr><td>total_insertions</td><td>INTEGER</td><td>Lines added</td></tr>
+                        <tr><td>total_deletions</td><td>INTEGER</td><td>Lines deleted</td></tr>
+                        <tr><td>commits_per_hour</td><td>REAL</td><td>Commit velocity</td></tr>
+                        <tr><td>lines_per_hour</td><td>REAL</td><td>Coding velocity</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>Useful Views</h3>
+            <table>
+                <thead>
+                    <tr><th>View</th><th>Purpose</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>v_session_durations</code></td>
+                        <td>Calculates session length from start/end timestamps</td>
+                    </tr>
+                    <tr>
+                        <td><code>v_active_coding_time</code></td>
+                        <td>Sums time between tool_start and tool_end events</td>
+                    </tr>
+                    <tr>
+                        <td><code>v_commit_gaps</code></td>
+                        <td>Uses LAG() to calculate time between consecutive commits</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Section 5: ROI -->
+        <section id="roi">
+            <h2><span class="num">5</span> ROI Calculations</h2>
+
+            <p>The ROI (Return on Investment) calculations estimate the value generated by AI-assisted development compared to traditional manual coding.</p>
+
+            <h3>Core Formula</h3>
+
+            <div class="formula">
+                <div class="main">Time Saved = Dev Hours × (Multiplier - 1)</div>
+                <div class="note">Where Multiplier represents how much longer the same work would take manually</div>
+            </div>
+
+            <div class="formula">
+                <div class="main">Cost Savings = Time Saved × Hourly Rate</div>
+                <div class="note">Converts time saved into monetary value</div>
+            </div>
+
+            <h3>Default Values</h3>
+            <table>
+                <thead>
+                    <tr><th>Parameter</th><th>Default</th><th>Source</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Multiplier</td>
+                        <td>2.5x</td>
+                        <td>Industry research on AI coding assistants (30-60% productivity gain)</td>
+                    </tr>
+                    <tr>
+                        <td>Hourly Rate</td>
+                        <td>$75/hour</td>
+                        <td>Configurable via <code>DEV_TRACKER_HOURLY_RATE</code> env var</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Example Calculation</h3>
+            <div class="card highlight">
+                <h4>Monthly Report Example</h4>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td><strong>Input: Dev Hours (with AI)</strong></td>
+                            <td>40 hours</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Multiplier</strong></td>
+                            <td>2.5x</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Estimated Manual Hours</strong></td>
+                            <td>40 × 2.5 = <strong>100 hours</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Time Saved</strong></td>
+                            <td>100 - 40 = <strong>60 hours</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Hourly Rate</strong></td>
+                            <td>$75/hour</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Cost Savings</strong></td>
+                            <td>60 × $75 = <strong>$4,500</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>Why 2.5x Multiplier?</h3>
+            <p>The 2.5x multiplier is based on multiple industry studies:</p>
+            <ul>
+                <li><strong>GitHub Copilot Study (2022):</strong> Developers completed tasks 55% faster with AI assistance</li>
+                <li><strong>McKinsey Report (2023):</strong> AI tools can improve developer productivity by 30-50%</li>
+                <li><strong>Google Internal Study:</strong> Code generation tools reduced time-to-completion by 40%</li>
+            </ul>
+            <p>The 2.5x multiplier (150% time savings) is a <em>conservative</em> estimate that accounts for:</p>
+            <ul>
+                <li>Time spent reviewing AI-generated code</li>
+                <li>Context switching overhead</li>
+                <li>Tasks where AI provides less benefit</li>
+            </ul>
+
+            <h3>Adjusting the Multiplier</h3>
+            <p>You can adjust the multiplier in the dashboard's ROI Calculator panel based on your experience:</p>
+            <ul>
+                <li><strong>2.0x</strong> - Conservative (tasks with significant manual oversight needed)</li>
+                <li><strong>2.5x</strong> - Balanced (general development work)</li>
+                <li><strong>3.0x</strong> - Optimistic (routine/boilerplate-heavy tasks)</li>
+                <li><strong>4.0x+</strong> - High-automation (bulk refactoring, code generation)</li>
+            </ul>
+        </section>
+
+        <!-- Section 6: MCP Tools -->
+        <section id="mcp">
+            <h2><span class="num">6</span> MCP Server Tools</h2>
+
+            <p>The MCP (Model Context Protocol) server exposes tools that Claude Code can use to interact with your tracking data and external services.</p>
+
+            <h3>Analytics Tools</h3>
+            <table>
+                <thead>
+                    <tr><th>Tool</th><th>Description</th><th>Parameters</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>get_dev_stats</code></td>
+                        <td>Get development statistics for a time period</td>
+                        <td>days (default: 7)</td>
+                    </tr>
+                    <tr>
+                        <td><code>get_recent_commits</code></td>
+                        <td>List recent commits with diff stats</td>
+                        <td>limit (default: 20)</td>
+                    </tr>
+                    <tr>
+                        <td><code>generate_roi_report</code></td>
+                        <td>Generate a formatted ROI report</td>
+                        <td>days (default: 30)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Project Management Tools</h3>
+            <table>
+                <thead>
+                    <tr><th>Tool</th><th>Description</th><th>Parameters</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>list_roadmap_projects</code></td>
+                        <td>List all projects from Roadmap API</td>
+                        <td>none</td>
+                    </tr>
+                    <tr>
+                        <td><code>get_project_details</code></td>
+                        <td>Get details for a specific project</td>
+                        <td>identifier (api_key or name)</td>
+                    </tr>
+                    <tr>
+                        <td><code>link_repo_to_project</code></td>
+                        <td>Link current repo to a Roadmap project</td>
+                        <td>project_api_key, project_name, auto_push</td>
+                    </tr>
+                    <tr>
+                        <td><code>get_linked_projects</code></td>
+                        <td>Show all repo-to-project mappings</td>
+                        <td>none</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Update Tools</h3>
+            <table>
+                <thead>
+                    <tr><th>Tool</th><th>Description</th><th>Parameters</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>push_project_update</code></td>
+                        <td>Push a status update to Roadmap</td>
+                        <td>project_identifier, notes, status</td>
+                    </tr>
+                    <tr>
+                        <td><code>push_commit_to_roadmap</code></td>
+                        <td>Sync a specific commit to Roadmap</td>
+                        <td>commit_hash</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Session Tools</h3>
+            <table>
+                <thead>
+                    <tr><th>Tool</th><th>Description</th><th>Parameters</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>log_session_start</code></td>
+                        <td>Manually start a tracking session</td>
+                        <td>none</td>
+                    </tr>
+                    <tr>
+                        <td><code>log_session_end</code></td>
+                        <td>Manually end a tracking session</td>
+                        <td>none</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Example Usage in Claude Code</h3>
+            <pre><code># Ask Claude to show your stats
+"Show me my development stats for the last 14 days"
+
+# Generate an ROI report
+"Generate an ROI report for this month"
+
+# Push an update to Roadmap
+"Push an update to the Canvas Editor project: Completed zoom controls feature"
+
+# Link current repo
+"Link this repository to the Marketing Dashboard project"</code></pre>
+        </section>
+
+        <!-- Section 7: Configuration -->
+        <section id="config">
+            <h2><span class="num">7</span> Configuration</h2>
+
+            <h3>Environment Variables</h3>
+            <table>
+                <thead>
+                    <tr><th>Variable</th><th>Required</th><th>Default</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="env-var">ROADMAP_API_TOKEN</td>
+                        <td>Yes*</td>
+                        <td>-</td>
+                        <td>64-character API token for Roadmap integration</td>
+                    </tr>
+                    <tr>
+                        <td class="env-var">DEV_TRACKER_DB</td>
+                        <td>No</td>
+                        <td>~/dev-tracker/dev_tracker.db</td>
+                        <td>Path to SQLite database file</td>
+                    </tr>
+                    <tr>
+                        <td class="env-var">DEV_TRACKER_LOG</td>
+                        <td>No</td>
+                        <td>~/dev-tracker/tracker.log</td>
+                        <td>Path to log file for debugging</td>
+                    </tr>
+                    <tr>
+                        <td class="env-var">DEV_TRACKER_HOURLY_RATE</td>
+                        <td>No</td>
+                        <td>75</td>
+                        <td>Hourly rate ($) for ROI calculations</td>
+                    </tr>
+                    <tr>
+                        <td class="env-var">GITHUB_TOKEN</td>
+                        <td>No</td>
+                        <td>-</td>
+                        <td>GitHub PAT for fetching repo data in dashboard</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p><em>* Required only for Roadmap API integration features</em></p>
+
+            <h3>File Locations</h3>
+            <table>
+                <thead>
+                    <tr><th>File</th><th>Location</th><th>Purpose</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Claude Hooks Config</td>
+                        <td><code>~/.claude/hooks.json</code></td>
+                        <td>Hook definitions for Claude Code</td>
+                    </tr>
+                    <tr>
+                        <td>MCP Config</td>
+                        <td><code>~/.claude/config.json</code></td>
+                        <td>MCP server configuration</td>
+                    </tr>
+                    <tr>
+                        <td>Database</td>
+                        <td><code>~/dev-tracker/dev_tracker.db</code></td>
+                        <td>SQLite database</td>
+                    </tr>
+                    <tr>
+                        <td>Track Script</td>
+                        <td><code>~/dev-tracker/hooks/track.sh</code></td>
+                        <td>Main tracking script</td>
+                    </tr>
+                    <tr>
+                        <td>MCP Server</td>
+                        <td><code>~/dev-tracker/server.py</code></td>
+                        <td>MCP server for Claude Code tools</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Section 8: Troubleshooting -->
+        <section id="troubleshooting">
+            <h2><span class="num">8</span> Troubleshooting</h2>
+
+            <div class="card">
+                <h4>Hooks not firing</h4>
+                <p><strong>Symptom:</strong> No data being recorded in the database</p>
+                <p><strong>Solution:</strong></p>
+                <ol>
+                    <li>Verify hooks.json exists: <code>cat ~/.claude/hooks.json</code></li>
+                    <li>Check track.sh is executable: <code>ls -la ~/dev-tracker/hooks/track.sh</code></li>
+                    <li>Test manually: <code>~/dev-tracker/hooks/track.sh start</code></li>
+                    <li>Check logs: <code>tail -f ~/dev-tracker/tracker.log</code></li>
+                </ol>
+            </div>
+
+            <div class="card">
+                <h4>Database errors</h4>
+                <p><strong>Symptom:</strong> "no such table" or database locked errors</p>
+                <p><strong>Solution:</strong></p>
+                <ol>
+                    <li>Reinitialize database: <code>sqlite3 ~/dev-tracker/dev_tracker.db < ~/dev-tracker/schema.sql</code></li>
+                    <li>Check permissions: <code>ls -la ~/dev-tracker/dev_tracker.db</code></li>
+                    <li>Verify no other processes: <code>lsof ~/dev-tracker/dev_tracker.db</code></li>
+                </ol>
+            </div>
+
+            <div class="card">
+                <h4>MCP server not connecting</h4>
+                <p><strong>Symptom:</strong> Claude Code can't find dev-tracker tools</p>
+                <p><strong>Solution:</strong></p>
+                <ol>
+                    <li>Verify config.json is correct: <code>cat ~/.claude/config.json</code></li>
+                    <li>Test server directly: <code>python3 ~/dev-tracker/server.py</code></li>
+                    <li>Check Python dependencies: <code>pip3 install mcp httpx</code></li>
+                    <li>Restart Claude Code</li>
+                </ol>
+            </div>
+
+            <div class="card">
+                <h4>Roadmap API errors</h4>
+                <p><strong>Symptom:</strong> "401 Unauthorized" or "Token not set" errors</p>
+                <p><strong>Solution:</strong></p>
+                <ol>
+                    <li>Verify token is set: <code>echo $ROADMAP_API_TOKEN</code></li>
+                    <li>Check token length (should be 64 characters)</li>
+                    <li>Test API directly: <code>curl -H "Authorization: Bearer $ROADMAP_API_TOKEN" https://feedback.edwinlovett.com/roadmap/api/v1/projects</code></li>
+                </ol>
+            </div>
+
+            <div class="card">
+                <h4>macOS: md5sum not found</h4>
+                <p><strong>Symptom:</strong> Session IDs fail to generate on macOS</p>
+                <p><strong>Solution:</strong> The latest track.sh automatically detects and uses <code>md5</code> on macOS. If you have an older version, update from the repository.</p>
+            </div>
+
+            <div class="card">
+                <h4>Dashboard shows no data</h4>
+                <p><strong>Symptom:</strong> Dashboard loads but all values show "--"</p>
+                <p><strong>Solution:</strong></p>
+                <ol>
+                    <li>Make sure you're in "Demo Data" mode for testing</li>
+                    <li>For live data, ensure data_collector.py has run: <code>python3 ~/dev-tracker/demo/data_collector.py</code></li>
+                    <li>Check browser console for JavaScript errors (F12)</li>
+                </ol>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <p>Development Tracker &copy; 2025 | <a href="https://github.com/edwinlov3tt/dev-tracker">GitHub Repository</a></p>
+            <p>Built for tracking AI-assisted development with Claude Code</p>
+        </footer>
+    </div>
+</body>
+</html>

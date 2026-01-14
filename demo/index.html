@@ -116,6 +116,31 @@
             pointer-events: none;
         }
 
+        .help-btn {
+            padding: 8px 16px;
+            background: var(--primary);
+            border: 1px solid var(--primary);
+            color: white;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .help-btn:hover {
+            background: #5558e3;
+            border-color: #5558e3;
+        }
+
+        .help-btn span {
+            font-size: 1rem;
+        }
+
         .last-updated {
             font-size: 0.75rem;
             color: var(--text-muted);
@@ -171,6 +196,12 @@
             grid-template-columns: 2fr 1fr;
             gap: 24px;
             margin-bottom: 24px;
+            min-height: 600px;
+        }
+
+        .grid-3 > .card {
+            display: flex;
+            flex-direction: column;
         }
 
         @media (max-width: 1024px) {
@@ -264,8 +295,9 @@
 
         /* Commit Timeline */
         .commit-list {
-            max-height: 400px;
+            flex: 1;
             overflow-y: auto;
+            min-height: 0;
         }
 
         .commit-item {
@@ -470,6 +502,78 @@
             color: var(--text-muted);
         }
 
+        .phase-badge {
+            display: inline-flex;
+            align-items: center;
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        .phase-badge.phase-ideation {
+            background: rgba(168, 85, 247, 0.2);
+            color: #a855f7;
+        }
+
+        .phase-badge.phase-development {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+        }
+
+        .phase-badge.phase-beta {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+        }
+
+        .phase-badge.phase-live {
+            background: rgba(34, 197, 94, 0.2);
+            color: var(--success);
+        }
+
+        .phase-badge.phase-maintenance {
+            background: rgba(100, 116, 139, 0.2);
+            color: var(--text-muted);
+        }
+
+        .cap-badge {
+            display: inline-flex;
+            align-items: center;
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        .cap-badge.yes {
+            background: rgba(34, 197, 94, 0.2);
+            color: var(--success);
+        }
+
+        .cap-badge.no {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--error);
+        }
+
+        .export-btn {
+            padding: 8px 16px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 0.875rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .export-btn:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
         /* Collapsible Section */
         .collapsible {
             margin-top: 24px;
@@ -583,6 +687,9 @@
                 <span>Development Tracker</span>
             </h1>
             <div class="header-controls">
+                <a href="/steps" class="help-btn">
+                    <span>&#9432;</span> How It Works
+                </a>
                 <div class="mode-toggle">
                     <button id="demoModeBtn" class="active" onclick="setMode('demo')">Demo Data</button>
                     <button id="liveModeBtn" onclick="setMode('live')">Live Data</button>
@@ -711,12 +818,17 @@
         <div class="card" style="margin-bottom: 24px;">
             <div class="card-header">
                 <h2>Project Mappings</h2>
+                <a href="/api/export/csv?days=30" class="export-btn" download>
+                    <span>&#8595;</span> Export CSV
+                </a>
             </div>
             <table class="mappings-table">
                 <thead>
                     <tr>
                         <th>Repository</th>
                         <th>Roadmap Project</th>
+                        <th>Phase</th>
+                        <th>Capitalizable</th>
                         <th>Auto-Sync</th>
                     </tr>
                 </thead>
@@ -724,60 +836,6 @@
                     <!-- Populated by JS -->
                 </tbody>
             </table>
-        </div>
-
-        <!-- How It Works -->
-        <div class="collapsible">
-            <div class="collapsible-header" onclick="toggleCollapsible(this)">
-                <span class="icon">&#9654;</span>
-                <h2>How It Works</h2>
-            </div>
-            <div class="collapsible-content">
-                <pre class="architecture-diagram">
-┌─────────────────────────────────────────────────────────────────┐
-│                    DEVELOPMENT TRACKER                          │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  Claude Code Hooks          Git Hooks          SQLite DB        │
-│  ┌─────────────┐           ┌──────────┐       ┌──────────────┐  │
-│  │ PreToolUse  │──────────▶│          │       │              │  │
-│  │ PostToolUse │──────────▶│ track.sh │──────▶│ dev_tracker  │  │
-│  │ Stop        │──────────▶│          │       │    .db       │  │
-│  └─────────────┘           └──────────┘       └──────┬───────┘  │
-│                                                       │          │
-│                            ┌──────────┐               │          │
-│                            │ post-    │───────────────┘          │
-│                            │ commit   │                          │
-│                            └──────────┘                          │
-│                                                                  │
-│  ┌─────────────────────────────────────────────────────────────┐│
-│  │                    Dashboard & MCP Server                    ││
-│  │                                                              ││
-│  │  Data Sources:                                               ││
-│  │  • SQLite Database (sessions, commits, metrics)              ││
-│  │  • GitHub API (repos, commit history)                        ││
-│  │  • Roadmap API (projects, updates)                           ││
-│  │                                                              ││
-│  │  MCP Tools: list_projects, push_update, get_stats, etc.     ││
-│  └─────────────────────────────────────────────────────────────┘│
-│                              │                                   │
-│                              ▼                                   │
-│                    ┌──────────────────┐                         │
-│                    │   Roadmap API    │                         │
-│                    │ feedback.edwin   │                         │
-│                    │ lovett.com       │                         │
-│                    └──────────────────┘                         │
-└─────────────────────────────────────────────────────────────────┘
-
-ROI Calculation:
-━━━━━━━━━━━━━━━━
-Time Saved = Dev Hours × (Multiplier - 1)
-Cost Savings = Time Saved × Hourly Rate
-
-Default: 2.5x multiplier (industry standard for AI-assisted development)
-         $75/hour rate
-                </pre>
-            </div>
         </div>
     </div>
 
@@ -1110,18 +1168,21 @@ Default: 2.5x multiplier (industry standard for AI-assisted development)
         function renderMappings() {
             const mappings = currentData?.project_mappings || [];
             const container = document.getElementById('mappingsBody');
+            const phases = ['ideation', 'development', 'beta', 'live', 'maintenance'];
 
-            container.innerHTML = mappings.map(mapping => `
-                <tr>
-                    <td><code>${mapping.repo || mapping.repo_path || '--'}</code></td>
-                    <td>${mapping.project_name || '--'}</td>
-                    <td>
-                        <span class="auto-sync-badge ${mapping.auto_push ? 'enabled' : 'disabled'}">
-                            ${mapping.auto_push ? '✓ Enabled' : '○ Disabled'}
-                        </span>
-                    </td>
-                </tr>
-            `).join('');
+            let html = '';
+            mappings.forEach(mapping => {
+                const phase = mapping.phase || 'development';
+                const isCapitalizable = ['development', 'beta'].includes(phase);
+                html += '<tr>';
+                html += '<td><code>' + escapeHtml(mapping.repo || mapping.repo_path || '--') + '</code></td>';
+                html += '<td>' + escapeHtml(mapping.project_name || '--') + '</td>';
+                html += '<td><span class="phase-badge phase-' + phase + '">' + phase.charAt(0).toUpperCase() + phase.slice(1) + '</span></td>';
+                html += '<td><span class="cap-badge ' + (isCapitalizable ? 'yes' : 'no') + '">' + (isCapitalizable ? 'Yes' : 'No') + '</span></td>';
+                html += '<td><span class="auto-sync-badge ' + (mapping.auto_push ? 'enabled' : 'disabled') + '">' + (mapping.auto_push ? 'Enabled' : 'Disabled') + '</span></td>';
+                html += '</tr>';
+            });
+            container.innerHTML = html;
         }
 
         // Collapsible
